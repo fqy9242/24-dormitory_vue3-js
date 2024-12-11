@@ -1,22 +1,34 @@
 <script setup>
 import { User, Lock } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/user';
+import router from '@/router';
 const loginForm = ref({
     studentNumber: '',
     password: ''
 })
+const userStore = useUserStore()
 // 登录类型 1学生登录 2管理员登录
 const loginType = ref(1)
 
 const loginOnHandle = () => {
     // 表单校验通过，调用登录
-    loginFormRef.value.validate((valid) => {
+    loginFormRef.value.validate( async(valid) => {
         if (valid) {
-            if (loginType == 1) {
+            const formData = new FormData()
+            if (loginType.value == 1) {
                 // 学生登录
+                formData.append('studentNumber', loginForm.value.studentNumber)
+
             } else {
                 // 管理员登录
+                formData.append('username', loginForm.value.studentNumber)
             }
+
+            formData.append('password', loginForm.value.password)
+            await userStore.getUserInfo(loginType.value, formData)
+            ElMessage.success('登录成功')
+            router.push({path:'/'})
         }
     })
 
@@ -25,7 +37,7 @@ const loginFormRef = ref()
 const loginRules = {
     studentNumber: [
         { required: true, message: '请输入学号', trigger: 'blur' },
-        { pattern: /^[0-9]{13}$/, message: '学号格式不正确', trigger: 'blur' }
+        // { pattern: /^[0-9]{13}$/, message: '学号格式不正确', trigger: 'blur' }
     ],
     password: [
         { required: true, message: '请输入密码', trigger: 'blur' },
@@ -48,7 +60,7 @@ const loginRules = {
             </div>
             <el-form :model="loginForm" ref="loginFormRef" :rules="loginRules">
                 <el-form-item prop="studentNumber">
-                    <el-input :prefix-icon="User" v-model="loginForm.studentNumber" placeholder="请输入学号" />
+                    <el-input :prefix-icon="User" v-model="loginForm.studentNumber" placeholder="请输入学号或管理员账号" />
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input type="password" :prefix-icon="Lock" v-model="loginForm.password" placeholder="请输入密码" />
