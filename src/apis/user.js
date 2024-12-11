@@ -7,3 +7,14 @@ export const studentLoginApi = (data) => {
         data
     })
 }
+// 学生获取可选宿舍列表
+export const getPlanDormListApi = (className, gender) => {
+    return request({
+      url: "/student/getPlanDormitory",
+      method: "get",
+      params: {
+        className,
+        gender
+      }
+    })
+}
