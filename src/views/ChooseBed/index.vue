@@ -19,6 +19,7 @@ const generateRange = (amount) => {
 }
 // 选定床位被点击
 const submitOnHandle = () => {
+    alert('选定床位' + bedNumber.value + '宿舍id' + dormitoryId.value)
     
 }
 // 获取宿舍列表
@@ -43,7 +44,7 @@ onMounted(() => {
                 <el-button class="bed_number_btn"
                     :class="{ 'selected': bedNumber === num && dormitoryId == planDormitory.id}"
                     @click="bedNumberOnHandle(num, planDormitory.id)"
-                    v-for="num in generateRange(planDormitory.planNumber)" :key="num">
+                    v-for="num in generateRange(planDormitory.bedAmount)" :key="num">
                     {{ num }}
                 </el-button>
             </div>
@@ -83,8 +84,10 @@ onMounted(() => {
 
 .el-card {
     width: 90%;
-    height: 35%;
-    /* border-top: 0; */
+    height: auto;
+    border-top: 0;
+    border-bottom: 0;
+
 }
 
 .choose_bad_container {
@@ -92,8 +95,10 @@ onMounted(() => {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    height: 100vh;
+    /* height: 100vh; */
+    height: 100%;
     margin-bottom: 39px;
+    /* overflow-y: auto; */
 }
 
 .domitory_name {
@@ -110,6 +115,7 @@ onMounted(() => {
     flex-wrap: wrap;
     justify-content: space-between;
     width: 100%;
+    /* height: auto; */
 }
 
 .bed_number_btn {
@@ -121,11 +127,11 @@ onMounted(() => {
 .bed_number_btn.selected {
     background-color: #fbe1e2;
     color: red;
-    border-radius: solid 1px red;
+    border: solid 1px red;
 }
 .bed_number_btn:hover {
     background-color: #fbe1e2;
     color: red;
-    border-radius: solid 1px red;
+    border: solid 1px red;
 }
 </style>
