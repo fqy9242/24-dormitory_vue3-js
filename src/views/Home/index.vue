@@ -1,20 +1,4 @@
-<script setup>
-import router from '@/router';
-import { onMounted } from 'vue';
-const chooseBedOnHandle = () => {
-    // 路由跳转到选床位页
-    router.push({name: 'ChooseBed'})
-}
-const checkIsLogin = () => {
-    // 判断是否登录
-    if (!localStorage.getItem('token')) {
-        router.push({name: 'Login'})
-    }
-}
-onMounted(() => {
-    checkIsLogin()
-})
-</script>
+<script setup></script>
 <template>
     <div class="guide_container">
         <h2 class="title">入学指南</h2>
@@ -26,8 +10,10 @@ onMounted(() => {
             截至2023年11月，学校占地面积3458.13亩，设东、西两个校区（西校区占地面积964.66亩，东校区占地面积2493.47亩）；设有11个教学单位，有招生备案专业88个（四年制职业本科专业36个，二年制职业本科专业9个，高职专科专业43个）；有全日制在校生25000多人，教职工近1500人。
         </p>
         <div class="foot_btn">
-            <el-button @click="chooseBedOnHandle" class="choose_bed_btn">选定床位</el-button>
-            <el-button class="choose_record_btn">选定记录</el-button>
+            <el-button class="choose_bed_btn"><router-link class="link" to="/chooseBed"
+                    :key="toChooseBed">选定床位</router-link></el-button>
+            <el-button class="choose_record_btn"><router-link class="link" to="/chooseBedRecord"
+                    :key="toChooseBedRecord">选定记录</router-link></el-button>
         </div>
     </div>
 </template>
@@ -71,6 +57,7 @@ p {
     justify-content: space-around;
     align-items: center;
     z-index: 1000;
+    /* color: white; */
 }
 
 .choose_bed_btn {
@@ -87,5 +74,9 @@ p {
     width: 47%;
     height: 100%;
     margin-bottom: 5px;
+}
+.link {
+    color: white;
+    text-decoration: none;
 }
 </style>

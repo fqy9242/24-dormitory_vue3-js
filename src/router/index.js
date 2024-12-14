@@ -15,6 +15,11 @@ const router = createRouter({
 
     },
     {
+      path: '/chooseBedRecord',
+      name: 'ChooseBedRecord',
+      component: () => import('@/views/ChooseBedRecord/index.vue')
+    },
+    {
       path: "/login",
       name: "Login",
       component: () => import("@/views/Login/index.vue"),

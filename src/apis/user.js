@@ -31,7 +31,13 @@ export const getAlreadyChooseBedApi = (studentNumber) => {
   return request({
     url: "/student/getAlreadyChooseBed",
     params: {
-      studentNumber,
-    },
-  });
-};
+      studentNumber
+    }
+  })
+}
+// 根据宿舍号列表获取已被选的床位
+export const getOccupiedBedApi = (dormitoryIds) => {
+  return request({
+    url: `/student/getOccupiedBed?dormitoryIds=${dormitoryIds}`,
+  })
+}

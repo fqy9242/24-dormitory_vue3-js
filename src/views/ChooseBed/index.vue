@@ -1,10 +1,11 @@
 <script setup>
-import { getPlanDormListApi, chooseBedApi, getAlreadyChooseBedApi } from '@/apis/user'
+import { getPlanDormListApi, chooseBedApi, getAlreadyChooseBedApi, getOccupiedBedApi } from '@/apis/user'
 import { useUserStore } from '@/stores/user'
 import { onMounted, ref } from 'vue'
 const userStore = useUserStore()
 const planDormitoryList = ref([])
 const alreadyChooseBedNumber = ref(null)
+const occupiedBeds = ref([])
 // 选中的床位号
 const bedNumber = ref(null)
 // 选中的宿舍id
@@ -13,8 +14,24 @@ const dormitoryId = ref(null)
 const getAlreadyChooseBed = async () => {
     const res = await getAlreadyChooseBedApi(userStore.userInfo.studentNumber)
     alreadyChooseBedNumber.value = res.data.dormitoryName + "宿舍" + res.data.bedRange + "号床"
-    console.log("床位信息:" + res.data.dormitoryName + "宿舍" + res.data.bedRange + "号床")
+    // console.log("床位信息:" + res.data.dormitoryName + "宿舍" + res.data.bedRange + "号床")
+}
+// 根据宿舍id获取已占用床位
+const getOccupiedBed = async (dormitoryIds) => {
+    const res = await getOccupiedBedApi(dormitoryIds)
+    occupiedBeds.value = res.data
+    // console.log("已占用床位:" + res.data);
     
+}
+// 判断床位是否被占用
+const isBedOccupied = (dormitoryId, bedRange) => {
+    // 拼接床位号
+    const bedNumber = dormitoryId + '-' + bedRange
+    const dormitory = occupiedBeds.value.find(item => item.dormitoryId === dormitoryId)
+    if (dormitory) {
+        return dormitory.occupiedBedRange.includes(bedNumber)
+    }
+    return false
 }
 // 选床位
 const chooseBed = async () => {
@@ -24,6 +41,9 @@ const chooseBed = async () => {
         studentNumber: userStore.userInfo.studentNumber
     })
     ElMessage.success("提交成功！")
+    // 刷新页面
+    window.location.reload()
+    // await getAlreadyChooseBed()
     // alreadyChooseBedNumber.value = bedNumber.value
 }
 
@@ -47,6 +67,10 @@ const submitOnHandle = () => {
 const getPlanDormList = async () => {
     const res = await getPlanDormListApi(userStore.userInfo.className, userStore.userInfo.gender)
     planDormitoryList.value = res.data
+    const dormitoryIds = res.data.map(item => item.id).join(',')
+    // console.log(dormitoryIds);
+    await getOccupiedBed(dormitoryIds)
+    // console.log("flag:" + occupiedBeds.value)
 }
 const bedNumberOnHandle = (num, id) => {
     bedNumber.value = num
@@ -60,20 +84,23 @@ onMounted(() => {
 </script>
 <template>
     <div class="choose_bad_container">
-    <h3>当前已提交:<span class="already_choose_bednumebr">{{ alreadyChooseBedNumber == null ? '未提交': alreadyChooseBedNumber }}</span></h3>
+        <h3>当前已提交:<span class="already_choose_bednumebr">{{ alreadyChooseBedNumber == null ? '未提交' :
+                alreadyChooseBedNumber }}</span></h3>
         <el-card v-for="planDormitory in planDormitoryList" :key="planDormitory.id" shadow="never">
             <span class="domitory_name">{{ planDormitory.dormitoryName }}宿舍</span>
             <div class="bed_number_container">
                 <el-button class="bed_number_btn"
-                    :class="{ 'selected': bedNumber === num && dormitoryId == planDormitory.id}"
+                    :class="{ 'selected': bedNumber === num && dormitoryId == planDormitory.id, 'already_occupied': isBedOccupied(planDormitory.id, num) }"
                     @click="bedNumberOnHandle(num, planDormitory.id)"
-                    v-for="num in generateRange(planDormitory.bedAmount)" :key="num">
+                    v-for="num in generateRange(planDormitory.bedAmount)" :key="num"
+                    :disabled="isBedOccupied(planDormitory.id, num)">
                     {{ num }}
                 </el-button>
             </div>
         </el-card>
         <div class="foot_btn">
-            <el-button @click="submitOnHandle" :class="{'select_bin':bedNumber != null}" class="submit_btn">选定床位</el-button>
+            <el-button @click="submitOnHandle" :class="{ 'select_bin': bedNumber != null }"
+                class="submit_btn">选定床位</el-button>
         </div>
     </div>
 </template>
@@ -158,5 +185,10 @@ onMounted(() => {
     background-color: #fbe1e2;
     color: red;
     border: solid 1px red;
+}
+.already_occupied {
+    pointer-events: none;
+    background-color: rgb(197, 76, 76);
+    color: white;
 }
 </style>
