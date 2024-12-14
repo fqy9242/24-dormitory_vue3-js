@@ -26,3 +26,12 @@ export const chooseBedApi = (data) => {
       data
     })
 }
+// 学生获取已选床位
+export const getAlreadyChooseBedApi = (studentNumber) => {
+  return request({
+    url: "/student/getAlreadyChooseBed",
+    params: {
+      studentNumber,
+    },
+  });
+};

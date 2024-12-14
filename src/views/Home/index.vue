@@ -1,9 +1,19 @@
 <script setup>
 import router from '@/router';
+import { onMounted } from 'vue';
 const chooseBedOnHandle = () => {
     // 路由跳转到选床位页
     router.push({name: 'ChooseBed'})
 }
+const checkIsLogin = () => {
+    // 判断是否登录
+    if (!localStorage.getItem('token')) {
+        router.push({name: 'Login'})
+    }
+}
+onMounted(() => {
+    checkIsLogin()
+})
 </script>
 <template>
     <div class="guide_container">
