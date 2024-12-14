@@ -1,8 +1,9 @@
 <script setup>
 import { User, Lock } from '@element-plus/icons-vue'
 import { ref } from 'vue'
-import { useUserStore } from '@/stores/user';
-import router from '@/router';
+import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
+const route = useRouter()
 const loginForm = ref({
     studentNumber: '',
     password: ''
@@ -28,7 +29,7 @@ const loginOnHandle = () => {
             formData.append('password', loginForm.value.password)
             await userStore.getUserInfo(loginType.value, formData)
             ElMessage.success('登录成功')
-            router.push({path:'/'})
+            route.push({path:'/'})
         }
     })
 
@@ -94,17 +95,16 @@ const loginRules = {
     display: flex;
     flex-direction: column;
     /* background-color: red; */
+    .el-input {
+            height: 50px;
+            width: 100%;
+        }
 }
 .login_btn {
     height: 50px;
     margin-top: 20px;
 }
-.login-card {
-    .el-input {
-        height: 50px;
-        width: 100%;
-    }
-}
+
 .login_type {
     margin-top: 50px;
 }
