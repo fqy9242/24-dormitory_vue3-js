@@ -18,3 +18,11 @@ export const getPlanDormListApi = (className, gender) => {
       }
     })
 }
+// 学生选床位
+export const chooseBedApi = (data) => {
+    return request({
+      url: "/student/chooseBed",
+      method: "post",
+      data
+    })
+}

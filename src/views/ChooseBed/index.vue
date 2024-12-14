@@ -1,6 +1,7 @@
 <script setup>
-import { getPlanDormListApi } from '@/apis/user'
+import { getPlanDormListApi, chooseBedApi } from '@/apis/user'
 import { useUserStore } from '@/stores/user'
+import { ElMessage } from 'element-plus';
 import { onMounted, ref } from 'vue'
 const userStore = useUserStore()
 const planDormitoryList = ref([])
@@ -8,6 +9,16 @@ const planDormitoryList = ref([])
 const bedNumber = ref(null)
 // 选中的宿舍id
 const dormitoryId = ref(null)
+
+// 选床位
+const chooseBed = async () => {
+    const res = await chooseBedApi({
+        bedRange: bedNumber.value,
+        dormitoryId: dormitoryId.value,
+        studentNumber: userStore.userInfo.studentNumber
+    })
+    ElMessage.success("提交成功！")
+}
 
 // 生成床位范围
 const generateRange = (amount) => {
@@ -19,8 +30,11 @@ const generateRange = (amount) => {
 }
 // 选定床位被点击
 const submitOnHandle = () => {
-    alert('选定床位' + bedNumber.value + '宿舍id' + dormitoryId.value)
-    
+    if (bedNumber.value == null) {
+        ElMessage.error("请选择宿舍及床位")
+        return
+    }
+    chooseBed()
 }
 // 获取宿舍列表
 const getPlanDormList = async () => {
