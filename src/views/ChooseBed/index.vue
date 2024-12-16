@@ -3,8 +3,14 @@ import { getPlanDormListApi, chooseBedApi, getAlreadyChooseBedApi, getOccupiedBe
 import { useUserStore } from '@/stores/user'
 import { onMounted, ref } from 'vue'
 const userStore = useUserStore()
-const planDormitoryList = ref([])
+// 已提交的宿舍全名
 const alreadyChooseBedNumber = ref(null)
+// 安排的宿舍列表
+const planDormitoryList = ref([])
+// 已提交宿舍床位序号
+const alreadyChooseBedRange = ref(null)
+// 已提交的宿舍id
+const alreadyChooseDormitoryId = ref(null)
 const occupiedBeds = ref([])
 // 选中的床位号
 const bedNumber = ref(null)
@@ -14,14 +20,14 @@ const dormitoryId = ref(null)
 const getAlreadyChooseBed = async () => {
     const res = await getAlreadyChooseBedApi(userStore.userInfo.studentNumber)
     alreadyChooseBedNumber.value = res.data.dormitoryName + "宿舍" + res.data.bedRange + "号床"
-    // console.log("床位信息:" + res.data.dormitoryName + "宿舍" + res.data.bedRange + "号床")
+    alreadyChooseBedRange.value = res.data.bedRange
+    alreadyChooseDormitoryId.value = res.data.dormitoryId
 }
 // 根据宿舍id获取已占用床位
 const getOccupiedBed = async (dormitoryIds) => {
     const res = await getOccupiedBedApi(dormitoryIds)
     occupiedBeds.value = res.data
     // console.log("已占用床位:" + res.data);
-    
 }
 // 判断床位是否被占用
 const isBedOccupied = (dormitoryId, bedRange) => {
@@ -94,101 +100,106 @@ onMounted(() => {
                     @click="bedNumberOnHandle(num, planDormitory.id)"
                     v-for="num in generateRange(planDormitory.bedAmount)" :key="num"
                     :disabled="isBedOccupied(planDormitory.id, num)">
-                    {{ num }}
+                    {{ planDormitory.id == alreadyChooseDormitoryId && alreadyChooseBedRange == num ? num + '(我选的)' :
+                    num }}
                 </el-button>
             </div>
         </el-card>
         <div class="foot_btn">
             <el-button @click="submitOnHandle" :class="{ 'select_bin': bedNumber != null }"
-                class="submit_btn">选定床位</el-button>
+                class="submit_btn">{{ alreadyChooseBedNumber != null ? "更改选定" : "选定床位" }}</el-button>
         </div>
     </div>
 </template>
 
 <style scoped>
-.submit_btn {
-    width: 80%;
-    height: 80%;
-    color: white;
-    background-color: gray;
-    margin-bottom: 8px;
-}
+    .submit_btn {
+        width: 80%;
+        height: 80%;
+        color: white;
+        background-color: gray;
+        margin-bottom: 8px;
+    }
 
-.select_bin {
-    background-color: rgb(197, 76, 76);
-    color: white;
+    .select_bin {
+        background-color: rgb(197, 76, 76);
+        color: white;
 
-}
-.already_choose_bednumebr {
-    color: red;
-}
-.foot_btn {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 7%;
-    background-color: white;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 1000;
-}
+    }
 
-.el-card {
-    width: 90%;
-    height: auto;
-    border-top: 0;
-    border-bottom: 0;
+    .already_choose_bednumebr {
+        color: red;
+    }
 
-}
+    .foot_btn {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 7%;
+        background-color: white;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+    }
 
-.choose_bad_container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    /* height: 100vh; */
-    height: 100%;
-    margin-bottom: 39px;
-    /* overflow-y: auto; */
-}
+    .el-card {
+        width: 90%;
+        height: auto;
+        border-top: 0;
+        border-bottom: 0;
 
-.domitory_name {
-    font-family: "黑体";
-    font-weight: bolder;
-    font-size: 1.2;
-    display: block;
-    margin-bottom: 5px;
-    text-align: center;
-}
+    }
 
-.bed_number_container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
-    /* height: auto; */
-}
+    .choose_bad_container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        /* height: 100vh; */
+        height: 100%;
+        margin-bottom: 39px;
+        /* overflow-y: auto; */
+    }
 
-.bed_number_btn {
-    width: calc(50% - 10px);
-    margin: 5px;
-    box-sizing: border-box;
-}
+    .domitory_name {
+        font-family: "黑体";
+        font-weight: bolder;
+        font-size: 1.2;
+        display: block;
+        margin-bottom: 5px;
+        text-align: center;
+    }
 
-.bed_number_btn.selected {
-    background-color: #fbe1e2;
-    color: red;
-    border: solid 1px red;
-}
-.bed_number_btn:hover {
-    background-color: #fbe1e2;
-    color: red;
-    border: solid 1px red;
-}
-.already_occupied {
-    pointer-events: none;
-    background-color: rgb(197, 76, 76);
-    color: white;
-}
+    .bed_number_container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        width: 100%;
+        /* height: auto; */
+    }
+
+    .bed_number_btn {
+        width: calc(50% - 10px);
+        margin: 5px;
+        box-sizing: border-box;
+    }
+
+    .bed_number_btn.selected {
+        background-color: #fbe1e2;
+        color: red;
+        border: solid 1px red;
+    }
+
+    .bed_number_btn:hover {
+        background-color: #fbe1e2;
+        color: red;
+        border: solid 1px red;
+    }
+
+    .already_occupied {
+        pointer-events: none;
+        background-color: rgb(197, 76, 76);
+        color: white;
+    }
 </style>

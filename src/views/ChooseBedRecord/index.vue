@@ -18,6 +18,7 @@ const getAlreadyChooseBed = async () => {
 // 推出登录按钮被点击
 const logoutOnHandle = () => {
     userStore.clearUserInfo()
+    ElMessage.success('退出成功!')
     router.push({path: '/login'})
 
 }
