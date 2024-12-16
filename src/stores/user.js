@@ -17,10 +17,18 @@ export const useUserStore = defineStore(
         // 管理员登录
         alert("管理员登录");
       }
-    };
+    }
+
+    //清空用户信息，也就是推出登录
+    const clearUserInfo = () => {
+      userInfo.value = {}
+      // 清空localStorage
+      localStorage.clear()
+    }
     return {
       userInfo,
       getUserInfo,
+      clearUserInfo,
     };
   },
   {
