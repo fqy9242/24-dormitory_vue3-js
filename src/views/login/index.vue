@@ -17,19 +17,21 @@ const loginOnHandle = () => {
     loginFormRef.value.validate( async(valid) => {
         if (valid) {
             const formData = new FormData()
+            formData.append('password', loginForm.value.password)
             if (loginType.value == 1) {
                 // 学生登录
                 formData.append('studentNumber', loginForm.value.studentNumber)
+                await userStore.getUserInfo(loginType.value, formData)
+                route.push({ path: '/' })
+                ElMessage.success('登录成功')
 
             } else {
                 // 管理员登录
                 formData.append('username', loginForm.value.studentNumber)
+                await userStore.getUserInfo(loginType.value, formData)
+                route.push({ path: '/admin' })
+                ElMessage.success('登录成功')
             }
-
-            formData.append('password', loginForm.value.password)
-            await userStore.getUserInfo(loginType.value, formData)
-            ElMessage.success('登录成功')
-            route.push({path:'/'})
         }
     })
 

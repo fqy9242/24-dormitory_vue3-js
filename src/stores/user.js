@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { studentLoginApi } from "@/apis/user";
+import { studentLoginApi } from "@/apis/user"
+import { administratorLoginApi } from "@/apis/administrator"
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate' //引入持久化插件
 export const useUserStore = defineStore(
   "user",
@@ -11,11 +12,12 @@ export const useUserStore = defineStore(
     const getUserInfo = async (userType, formData) => {
       if (userType == 1) {
         // 学生登录
-        const res = await studentLoginApi(formData);
-        userInfo.value = res.data;
+        const res = await studentLoginApi(formData)
+        userInfo.value = res.data
       } else {
-        // 管理员登录
-        alert("管理员登录");
+            // 管理员登录
+            const res = await administratorLoginApi(formData)
+            userInfo.value = res.data
       }
     }
 
