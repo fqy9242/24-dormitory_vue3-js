@@ -1,4 +1,25 @@
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { onMounted } from 'vue'
+const userStore = useUserStore()
+const router = useRouter()
+const checkIsLogin = () => {
+    if (userStore.userInfo.token == null) {
+        ElMessage.error("请先登录！")
+        router.push('/login')
+    } else {
+        if (userStore.userInfo.studentNumber == null) {
+            router.push('/admin')
+        }
+    }
+}
+onMounted(() => {
+    checkIsLogin()
+})
+
+
+</script>
 <template>
     <div class="guide_container">
         <h2 class="title">入学指南</h2>

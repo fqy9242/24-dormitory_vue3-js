@@ -4,26 +4,26 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: () => import('@/views/Home/index.vue')
+      name: 'StudentHome',
+      component: () => import('@/views/Student/Home/index.vue')
 
     },
     {
       path: '/admin',
       name: 'AdminHome',
-      component: () => import('@/views/AdministratorHome/index.vue')
+      component: () => import('@/views/Admin/Home/index.vue')
 
     },
     {
       path: '/chooseBed',
       name: 'ChooseBed',
-      component: () => import ('@/views/ChooseBed/index.vue')
+      component: () => import ('@/views/Student/ChooseBed/index.vue')
 
     },
     {
       path: '/chooseBedRecord',
       name: 'ChooseBedRecord',
-      component: () => import('@/views/ChooseBedRecord/index.vue')
+      component: () => import('@/views/Student/ChooseBedRecord/index.vue')
     },
     {
       path: "/login",

@@ -1,25 +1,69 @@
 <script setup>
 import { Expand, Avatar, Setting, Edit } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
-import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { onMounted } from 'vue'
 const userStore = useUserStore()
 const router = useRouter()
-const expandOnHandle = () => {
-    ElMessage.success("这么少功能就不做折叠/展开啦。")
-}
+// const updateDialogVisible = ref(false)
+const expandOnHandle = () => {}
+// const updatePasswordForm = ref({
+//     oldPassword: '',
+//     newPassword: '',
+//     confirmPassword: ''
+// })
 const setIcoOnHandle = () => {
     ElMessage.success("这么点功能就不做这个了。")
 }
-const logoutOnHandle =  () => {
+const logoutOnHandle = () => {
     userStore.clearUserInfo()
     ElMessage.success("退出登录成功！")
     router.push('/login')
 }
+// 修改密码确认提交
+// const updatePasswordOnHandle = () => {}
 
+const checkIsAdmin = () => {
+    // 没有登陆或者登录的是学生用户
+    if (userStore.userInfo.token == null || userStore.userInfo.studentNumber != null) {
+        ElMessage.error("请先登录管理员账号！")
+        router.push('/login')
+    }
+}
+// const handleMenuClick = (option) => {
+//     if (option === 'updatePassword') {
+//       // 修改密码
+//         updateDialogVisible.value = true
+
+//     }
+
+// }
+onMounted(() => {
+    checkIsAdmin()
+})
 </script>
 <template>
     <div class="containner">
+        <!-- <div class="update_password_dialog">
+            <el-dialog v-model="updateDialogVisible" title="修改登录密码" width="70%" destroy-on-close center>
+                <el-form :model="updatePasswordForm" label-width="80px">
+                    <el-form-item label="旧密码" prop="oldPassword">
+                        <el-input v-model="updatePasswordForm.oldPassword" show-password></el-input>
+                    </el-form-item>
+                    <el-form-item label="新密码" prop="newPassword">
+                        <el-input v-model="updatePasswordForm.newPassword" show-password></el-input>
+                    </el-form-item>
+                    <el-form-item label="确认密码" prop="confirmPassword">
+                        <el-input v-model="updatePasswordForm.confirmPassword" show-password></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer" style="text-align: center;">
+                    <el-button @click="updateDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="updatePasswordOnHandle">确 定</el-button>
+                </div>
+            </el-dialog>
+        </div> -->
         <div class="header">
             <!-- <img src="@/assets/logo" alt=""> -->
             <div class="title_icon">
@@ -41,14 +85,20 @@ const logoutOnHandle =  () => {
             </div>
             <span>选床位系统-管理员后台</span>
             <div class="header_right">
-                <el-icon class="expand_icon" @click="expandOnHandle">
-                    <Expand />
-                </el-icon>
+                <!-- <el-dropdown>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item @click="handleMenuClick('updatePassword')">修改密码</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template> -->
+                    <el-icon class="expand_icon" @click="setIcoOnHandle">
+                        <Expand />
+                    </el-icon>
+                <!-- </el-dropdown> -->
                 <el-icon>
                     <Avatar />
                 </el-icon>
-                <el-button class="logout_btn" @click=logoutOnHandle>退出</el-button>
-
+                <el-button class="logout_btn" @click="logoutOnHandle">退出</el-button>
             </div>
         </div>
         <div class="content">
@@ -59,22 +109,17 @@ const logoutOnHandle =  () => {
                 </el-icon>
             </div>
             <div class="operator_list">
-
                 <div class="operator">
                     <el-icon>
                         <Edit />
                     </el-icon>
-                    <span>分配床位</span>
+                    <span>分配宿舍</span>
                 </div>
-
             </div>
         </div>
-
-
-
-
     </div>
 </template>
+
 
 
 <style scoped>
@@ -82,15 +127,18 @@ const logoutOnHandle =  () => {
     display: flex;
     flex-direction: column;
     align-content: center;
+
     span {
         margin-top: 1%;
         font-family: "黑体";
     }
 }
+
 .operator_list {
     margin-top: 3%;
     margin-left: 10%;
     margin-right: 10%;
+
     .el-icon {
         background: #e5004f;
         border: 3px solid #e5004f;
@@ -98,9 +146,8 @@ const logoutOnHandle =  () => {
         color: white;
         font-size: 50px;
     }
-
-
 }
+
 .header_right {
     /* height: 100%; */
     float: right;
@@ -110,6 +157,7 @@ const logoutOnHandle =  () => {
     margin-top: 10px;
     margin-bottom: 2%;
 }
+
 .containner {
     width: 100%;
     height: 100vh;
@@ -119,11 +167,13 @@ const logoutOnHandle =  () => {
     /* justify-content: center; */
     background: #f0f0f0;
 }
+
 .header {
     background: #0483d4;
     /* height: 15%; */
     height: auto;
     border-radius: 6px 0px;
+
     span {
         display: block;
         color: #fff;
@@ -133,52 +183,61 @@ const logoutOnHandle =  () => {
         margin-top: -50px;
     }
 }
+
 .title_icon {
     display: inline-block;
     width: 50px;
     height: 50px;
     margin: 5px;
+
     svg {
         width: 100%;
         height: 100%;
     }
 }
+
 .header_right .el-icon {
     color: white;
     /* height: 90%; */
     font-size: 32px;
 }
+
 .logout_btn {
     background: #0483d4;
     color: #274355;
     border: #6aadd8 2px solid;
     width: 50px;
 }
+
 .expand_icon {
     border: white 1px solid;
     border-radius: 10px;
     cursor: pointer;
 }
+
 .content {
     margin-top: 3%;
     height: 100%;
     background: white;
 }
+
 .content_title {
     border-bottom: #ece4e4 1px solid;
     /* 使子元素在两端对齐 */
     justify-content: space-between;
     /* 垂直居中 */
     align-items: center;
-    
+
     display: flex;
+
     h3 {
         margin: 0;
         padding: 5px;
         margin-left: 10px;
     }
-    
+
 }
+
 .content_title .el-icon {
     font-size: 30px;
     color: #b1c4d0;
