@@ -1,6 +1,6 @@
 <script setup>
 import { User, Lock } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 const route = useRouter()
@@ -8,6 +8,12 @@ const loginForm = ref({
     studentNumber: '',
     password: ''
 })
+//点击回车键登录
+const keyDown = (e) => {
+    if (e.keyCode == 13 || e.keyCode == 100) {
+        loginOnHandle()
+    }
+}
 const userStore = useUserStore()
 // 登录类型 1学生登录 2管理员登录
 const loginType = ref(1)
@@ -47,6 +53,15 @@ const loginRules = {
         { min: 6, message: '密码长度不会少于6位', trigger: 'blur' }
     ]
 }
+onMounted(() => {
+    //绑定监听事件
+    window.addEventListener('keydown', keyDown)
+})
+
+onUnmounted(() => {
+    //销毁事件
+    window.removeEventListener('keydown', keyDown, false)
+});
 </script>
 <template>
     <div class="login-container">

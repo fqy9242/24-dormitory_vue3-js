@@ -6,7 +6,6 @@ const router = createRouter({
       path: '/',
       name: 'StudentHome',
       component: () => import('@/views/Student/Home/index.vue')
-
     },
     {
       path: '/admin',
@@ -29,7 +28,11 @@ const router = createRouter({
       path: "/login",
       name: "Login",
       component: () => import("@/views/Login/index.vue"),
-    },
+    },{
+      path: '/admin/planDormitory',
+      name: 'PlanDormitory',
+      component: () => import('@/views/Admin/PlanDormitory/index.vue')
+    }
   ],
 })
 export default router

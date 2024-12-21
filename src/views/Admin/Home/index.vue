@@ -39,6 +39,9 @@ const checkIsAdmin = () => {
 //     }
 
 // }
+const planDormitoryOnHandle = () => {
+    router.push('/admin/planDormitory')
+}
 onMounted(() => {
     checkIsAdmin()
 })
@@ -109,7 +112,7 @@ onMounted(() => {
                 </el-icon>
             </div>
             <div class="operator_list">
-                <div class="operator">
+                <div class="operator" @click="planDormitoryOnHandle">
                     <el-icon>
                         <Edit />
                     </el-icon>
