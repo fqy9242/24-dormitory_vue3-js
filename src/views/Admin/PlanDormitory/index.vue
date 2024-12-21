@@ -77,7 +77,7 @@ onMounted(() => {
                         </div>
                         <div class="form_item">
                             <span>年级</span>
-                            <el-input v-model="getClassListData.grade" placeholder="例如2023" clearable />
+                            <el-input v-model="getClassListData.grade" style="width: 50%;" placeholder="例如2023" clearable />
                         </div>
                         <div class="form_item">
                             <span>男生人数</span>
@@ -101,6 +101,7 @@ onMounted(() => {
                     </div>
                 </div>
                 <div class="button">
+                    <span>如需要根据条件筛选班级 填写对应条件即可 否则默认查看所有班级</span>
                     <el-button type="primary" @click="queryOnHandle">查询</el-button>
                 </div>
             </div>
@@ -143,17 +144,19 @@ onMounted(() => {
     width: 100%;
     display: flex;
     /* justify-content: flex-start; */
+    
 
 }
 .form_item {
     width: 100%;
     display: flex;
     align-items: center;
-    /* margin-left: 1%; */
+
 
     span {
-        margin-left: 2%;
-        margin-right: 2%;
+        flex: 0 0 auto;
+        width: auto;
+        margin: 0 10px;
     }
     .el-select {
         width: 55%;
@@ -162,9 +165,9 @@ onMounted(() => {
 
 
 }
-.el-input {
-    width: auto;
-}
+/* .el-input {
+    width: 100px;
+} */
 
 .el-pagination {
     margin-top: 1%;
@@ -172,6 +175,7 @@ onMounted(() => {
 .plan_domitory_container {
     background: #f0f0f0;
     height: 100vh;
+    overflow: hidden;
     /* padding: 1px; */
     /* display: flex; */
 }
@@ -218,7 +222,7 @@ onMounted(() => {
 .option {
     display: flex;
     padding-left: 1%;
-    padding-right: 1%;
+    /* padding-right: 1%; */
     /* width: 100%; */
     height: 60%;
     border: 1px solid #f0f0f0;
@@ -235,6 +239,10 @@ onMounted(() => {
     background: #f4f4f4;
     border: 1px solid #f0f0f0;
     justify-content: flex-end;
+    span {
+        margin-right: 1%;
+        color: red;
+    }
 
 }
 /* .el-form-item {
