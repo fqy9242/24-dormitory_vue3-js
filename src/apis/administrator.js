@@ -63,3 +63,13 @@ export const getDormitoryDetailApi = (dormitoryId) => {
     url: `/administrator/getDormitoryById/${dormitoryId}`,
   })
 }
+
+
+// 手动分配宿舍
+export const planDormitoryApi = (data) => {
+  return request({
+    url: "/administrator/planDormitory",
+    method: "post",
+    data
+  })
+}

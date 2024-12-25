@@ -1,13 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getClassListApi, getCollegeListApi, listPlanDormitoryByClassNameApi, listDormitoryAreaApi,
-    listBuildingByBuildingApi, listDormitoryByBuildingIdApi, getDormitoryDetailApi
+    listBuildingByBuildingApi, listDormitoryByBuildingIdApi, getDormitoryDetailApi, planDormitoryApi
  } from '@/apis/administrator'
+import { ElMessage } from 'element-plus'
 const classData = ref([])
 const total = ref(0)
 const dormitoryList = ref([])
 const collegeList = ref([])
 const buildingList = ref([])
+const isChange = ref(false)
 const thisDormitory = ref({})
 const getClassListData = ref({
     page: 1,
@@ -58,6 +60,17 @@ const getClassList = async () => {
     classData.value = res.data.records
     total.value = res.data.total
 }
+
+// 手动分配宿舍
+const planDormitory = async () => {
+    const res = await planDormitoryApi({
+        dormitoryId: planDormitoryClass.value.dormitoryId,
+        planNumber: planDormitoryClass.value.planNumber,
+        className: planDormitoryClass.value.className,
+        dormitoryType: planDormitoryClass.value.dormitoryType
+    })
+    ElMessage.success("分配成功！")
+}
 // 区域选择变化
 const selectAreaOnChange = (areaName) => {
     planDormitoryClass.value.buildingId = null
@@ -107,9 +120,31 @@ const handleRowClick = (row) => {
     listPlanDormitoryByClassName(row.className)
     planDormitoryDialogVisible.value = true
 }
+// 添加按钮被点击
+const planDormitoryOnHandle = () => {
+    if (planDormitoryClass.value.planNumber == null) {
+        ElMessage.error("请填写名额")
+        return
+    }
+    if (planDormitoryClass.value.dormitoryId == null) {
+        ElMessage.error("请选择宿舍")
+        return
+    }
+    planDormitory()
+    listPlanDormitoryByClassName(planDormitoryClass.value.className)
+    isChange.value = true
+}
 const selectBuildingOnChange = (buildingId) => {
     planDormitoryClass.value.dormitoryId = null
     listDormitoryByBuildingId(buildingId)
+}
+// 关闭分配宿舍对话框后
+const planDormitoryClose = () => {
+    if (isChange.value) {
+        // 刷新页面
+        window.location.reload()
+    }
+
 }
 onMounted(() => {
     getClassList()
@@ -127,7 +162,7 @@ onMounted(() => {
 
             <!-- 手动分配宿舍对话框 -->
             <div class="plan_dormitory_dialog">
-                <el-dialog v-model="planDormitoryDialogVisible" title="分配宿舍" :close-on-click-modal="false">
+                <el-dialog v-model="planDormitoryDialogVisible" title="分配宿舍" :close-on-click-modal="false" @closed="planDormitoryClose">
                     <div class="class_info_and_plan">
                         <div class="class_info">
                             <p>班级名称:{{ planDormitoryClass.className }}</p>
@@ -195,7 +230,7 @@ onMounted(() => {
                                 <el-form-item label="名额">
                                     <el-input v-model="planDormitoryClass.planNumber" placeholder="请输入名额" clearable />
                                 </el-form-item>
-                                <el-button>添加</el-button>
+                                <el-button @click="planDormitoryOnHandle">添加</el-button>
                             </el-form>
 
                         </div>
