@@ -159,7 +159,6 @@ onMounted(() => {
             </span>
         </div>
         <div class="content">
-
             <!-- 手动分配宿舍对话框 -->
             <div class="plan_dormitory_dialog">
                 <el-dialog v-model="planDormitoryDialogVisible" title="分配宿舍" :close-on-click-modal="false" @closed="planDormitoryClose">

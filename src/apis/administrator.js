@@ -80,3 +80,11 @@ export const getChooseStatusApi = () => {
     url: "/administrator/getChooseBedStatus",
   })
 }
+
+// 更改床位选择开放状态
+export const setChooseBedStatusApi = (status) => {
+  return request({
+    url: `/administrator/setChooseBedStatus/${status}`,
+    method: 'put'
+  })
+}

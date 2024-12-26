@@ -1,11 +1,15 @@
 <script setup>
-import { Expand, Avatar, Setting, Edit } from '@element-plus/icons-vue'
+import { Expand, Avatar, Setting, Edit, Clock } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
+import { setChooseBedStatusApi, getChooseStatusApi } from '@/apis/administrator'
 const userStore = useUserStore()
 const router = useRouter()
+const chooseBedOpenStatus = ref(null)
+const chooseBedOpenStatusCandidate = ref('1')
+const setChooseBedStatusDialogVisible = ref(false)
 // const updateDialogVisible = ref(false)
 const expandOnHandle = () => {}
 // const updatePasswordForm = ref({
@@ -21,6 +25,11 @@ const logoutOnHandle = () => {
     ElMessage.success("退出登录成功！")
     router.push('/login')
 }
+// 更改床位开放状态
+const setChooseBedStatus = async () => {
+    const res = await setChooseBedStatusApi(chooseBedOpenStatusCandidate.value)
+    ElNotification.success('设置成功！')
+}
 // 修改密码确认提交
 // const updatePasswordOnHandle = () => {}
 
@@ -31,6 +40,13 @@ const checkIsAdmin = () => {
         router.push('/login')
     }
 }
+// 设置开放选床位状态被点击
+const setChooseBedStatusOnHandle = () => {
+    setChooseBedStatusDialogVisible.value = false
+    setChooseBedStatus()
+    // getChooseStatus()
+    window.location.reload()
+}
 // const handleMenuClick = (option) => {
 //     if (option === 'updatePassword') {
 //       // 修改密码
@@ -39,11 +55,21 @@ const checkIsAdmin = () => {
 //     }
 
 // }
+// 获取开放床位选择状态
+const getChooseStatus = async () => {
+    const res = await getChooseStatusApi()
+    chooseBedOpenStatus.value = res.data
+}
 const planDormitoryOnHandle = () => {
     router.push('/admin/planDormitory')
 }
+const setStatusOnHandle = () => {
+    setChooseBedStatusDialogVisible.value = true
+
+}
 onMounted(() => {
     checkIsAdmin()
+    getChooseStatus()
 })
 </script>
 <template>
@@ -67,6 +93,35 @@ onMounted(() => {
                 </div>
             </el-dialog>
         </div> -->
+        <div>
+            <el-dialog class="setChooseBedStatusDialog" v-model="setChooseBedStatusDialogVisible" title="开放选床位状态设置"
+                width="30%" :style="{ height: '43%' }">
+                <el-radio-group v-model="chooseBedOpenStatusCandidate">
+                    <el-radio value= '1' size="large" border class="setStatusOption">
+                        <div>开放选床位</div>
+                        <div class="status_option_desc">
+                            设置该选项后，学生登录系统后将不可查看及选择床位
+                        </div>
+                    </el-radio>
+                    <el-radio value= '0' size="large" border class="setStatusOption">
+                        关闭选床位
+                        <div class="status_option_desc">
+                            设置该选项后，学生登录系统后将可查看及选择床位
+                        </div>
+                    </el-radio>
+                </el-radio-group>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button @click="setChooseBedStatusDialogVisible = false">取消</el-button>
+                        <el-button type="primary" @click="setChooseBedStatusOnHandle">
+                            确定
+                        </el-button>
+                    </div>
+                </template>
+
+            </el-dialog>
+        </div>
+
         <div class="header">
             <!-- <img src="@/assets/logo" alt=""> -->
             <div class="title_icon">
@@ -86,7 +141,16 @@ onMounted(() => {
                         p-id="5228" fill="#ffffff"></path>
                 </svg>
             </div>
-            <span>选床位系统-管理员后台</span>
+            <div class="title_text">
+                <span>选床位系统-管理员后台</span>
+                <span class="is_can_choose_status">
+                    {{ chooseBedOpenStatus == 1 ? '开放选择中':'未开放选择' }}
+                </span>
+            </div>
+            <!-- <span>
+                选床位系统-管理员后台
+            </span>
+            <div class="is_can_choose_status">开放选择中</div> -->
             <div class="header_right">
                 <!-- <el-dropdown>
                     <template #dropdown>
@@ -94,9 +158,15 @@ onMounted(() => {
                             <el-dropdown-item @click="handleMenuClick('updatePassword')">修改密码</el-dropdown-item>
                         </el-dropdown-menu>
                     </template> -->
-                    <el-icon class="expand_icon" @click="setIcoOnHandle">
-                        <Expand />
+                <div class="set_choose_bed_status" @click="setStatusOnHandle">
+                    <el-icon>
+                        <Clock />
                     </el-icon>
+                    <span class="set_choose_bed_status_text">开放选择状态设置</span>
+                </div>
+                <el-icon class="expand_icon" @click="setIcoOnHandle">
+                    <Expand />
+                </el-icon>
                 <!-- </el-dropdown> -->
                 <el-icon>
                     <Avatar />
@@ -124,13 +194,38 @@ onMounted(() => {
 </template>
 
 
-
 <style scoped>
+.status_option_desc {
+    margin-top: 2%;
+}
+/* 设置床位开放选择状态的单选选项 */
+.setStatusOption {
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    /* display: flex; */
+    background-color: #fbfbfa;
+    /* margin-top: 2%; */
+    /* height: 50%; */
+    width: 85%;
+    height: 90px;
+    margin-top: 5%;
+    margin-left: 8%;
+
+
+}
+/* 设置开放选宿舍状态那一块 */
+.set_choose_bed_status {
+    cursor: pointer;
+    padding-right: 30px;
+    color: white;
+}
 .operator {
     display: flex;
     flex-direction: column;
     align-content: center;
-
+    width: 5%;
+    /* background: red; */
     span {
         margin-top: 1%;
         font-family: "黑体";
@@ -151,14 +246,15 @@ onMounted(() => {
     }
 }
 
+
 .header_right {
     /* height: 100%; */
     float: right;
     margin-right: 2%;
     display: flex;
     align-items: center;
-    margin-top: 10px;
-    margin-bottom: 1%;
+    /* margin-top: 0.1%; */
+    margin-bottom: 0.1%;
 }
 
 .containner {
@@ -177,8 +273,8 @@ onMounted(() => {
     height: auto;
     border-radius: 6px 0px;
 
-    span {
-        display: block;
+    span:not(.set_choose_bed_status_text) {
+        display: inline-block;
         color: #fff;
         font-size: 20px;
         font-weight: bold;
@@ -186,7 +282,18 @@ onMounted(() => {
         margin-top: -50px;
     }
 }
-
+.is_can_choose_status {
+    display: inline-block;
+    background-color: #e5004f;
+    font-family: "黑体";
+    /* height: 25%; */
+    padding: 5px;
+    border-radius: 5px;
+}
+.title_text {
+    display: flex;
+    align-items: center;
+}
 .title_icon {
     display: inline-block;
     width: 50px;
@@ -198,7 +305,10 @@ onMounted(() => {
         height: 100%;
     }
 }
-
+.set_choose_bed_status_text {
+    position: relative;
+    top: -8px;
+}
 .header_right .el-icon {
     color: white;
     /* height: 90%; */

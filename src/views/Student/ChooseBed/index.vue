@@ -41,6 +41,7 @@ const isBedOccupied = (dormitoryId, bedRange) => {
     }
     return false
 }
+
 // 获取床位选择开放状态
 const getChooseStatus = async () => {
     const res = await getChooseStatusApi()
