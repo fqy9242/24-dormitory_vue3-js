@@ -1,7 +1,9 @@
 <script setup>
 import { getPlanDormListApi, chooseBedApi, getAlreadyChooseBedApi, getOccupiedBedApi } from '@/apis/user'
+import { getChooseStatusApi } from '@/apis/administrator'
 import { useUserStore } from '@/stores/user'
 import { onMounted, ref } from 'vue'
+const chooseBedOpenStatus = ref(0)
 const userStore = useUserStore()
 // 已提交的宿舍全名
 const alreadyChooseBedNumber = ref(null)
@@ -38,6 +40,11 @@ const isBedOccupied = (dormitoryId, bedRange) => {
         return dormitory.occupiedBedRange.includes(bedNumber)
     }
     return false
+}
+// 获取床位选择开放状态
+const getChooseStatus = async () => {
+    const res = await getChooseStatusApi()
+    chooseBedOpenStatus.value = res.data
 }
 // 选床位
 const chooseBed = async () => {
@@ -86,10 +93,11 @@ const bedNumberOnHandle = (num, id) => {
 onMounted(() => {
     getPlanDormList()
     getAlreadyChooseBed()
+    getChooseStatus()
 })
 </script>
 <template>
-    <div class="choose_bad_container">
+    <div class="choose_bad_container" v-if="chooseBedOpenStatus == 1">
         <h3>当前已提交:<span class="already_choose_bednumebr">{{ alreadyChooseBedNumber == null ? '未提交' :
                 alreadyChooseBedNumber }}</span></h3>
         <el-card v-for="planDormitory in planDormitoryList" :key="planDormitory.id" shadow="never">
@@ -109,6 +117,9 @@ onMounted(() => {
             <el-button @click="submitOnHandle" :class="{ 'select_bin': bedNumber != null }"
                 class="submit_btn">{{ alreadyChooseBedNumber != null ? "更改选定" : "选定床位" }}</el-button>
         </div>
+    </div>
+    <div v-else>
+        <h3>选床位功能暂未开放</h3>
     </div>
 </template>
 

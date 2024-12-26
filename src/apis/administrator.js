@@ -73,3 +73,10 @@ export const planDormitoryApi = (data) => {
     data
   })
 }
+
+// 获取床位选择开放状态状态
+export const getChooseStatusApi = () => {
+  return request({
+    url: "/administrator/getChooseBedStatus",
+  })
+}

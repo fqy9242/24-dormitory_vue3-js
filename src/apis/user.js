@@ -41,3 +41,4 @@ export const getOccupiedBedApi = (dormitoryIds) => {
     url: `/student/getOccupiedBed?dormitoryIds=${dormitoryIds}`,
   })
 }
+
