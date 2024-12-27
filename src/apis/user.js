@@ -41,4 +41,11 @@ export const getOccupiedBedApi = (dormitoryIds) => {
     url: `/student/getOccupiedBed?dormitoryIds=${dormitoryIds}`,
   })
 }
-
+// 学生用户修改登录密码
+export const updateLoginPasswordApi = (data) => {
+  return request({
+    url: "/student/updateLoginPassword",
+    method: "post",
+    data
+  })
+}
