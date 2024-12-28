@@ -1,13 +1,15 @@
 import axios from "axios";
-import { useUserStore } from "@/stores/user";
+import { useUserStore } from "@/stores/user"
 // import { useRouter } from "vue-router";
 // const router = useRouter()
-import router from "@/router";
+import router from "@/router"
 // axios的基础封装
 const httpInstance = axios.create({
     baseURL: '/api',
     timeout: 5000
 })
+// 是否弹出未登录提示
+let isUnLoginMessageShow = true
 // axios请求拦截器
 httpInstance.interceptors.request.use(config => {
   // 从pinia中获取token
@@ -37,7 +39,14 @@ httpInstance.interceptors.response.use(res => {
 }, e => {
     //判断状态码，401为未登录 
     if (e.response.status === 401) {
-        ElMessage.error('请先登录！')
+        if (isUnLoginMessageShow) {
+          ElMessage.error("请先登录！")
+          isUnLoginMessageShow = false
+          // 等3秒钟后重置
+          setTimeout(() => {
+            isUnLoginMessageShow = true
+          }, 3000);
+        }
         // 跳转到登录页
         router.push('/login')   
     } else {
