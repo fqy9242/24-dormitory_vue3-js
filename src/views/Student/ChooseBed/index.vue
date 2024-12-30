@@ -81,7 +81,7 @@ const submitOnHandle = () => {
 const getPlanDormList = async () => {
     const res = await getPlanDormListApi(userStore.userInfo.className, userStore.userInfo.gender)
     planDormitoryList.value = res.data
-    const dormitoryIds = res.data.map(item => item.id).join(',')
+    const dormitoryIds = res.data.map(item => item.dormitoryId).join(',')
     // console.log(dormitoryIds);
     await getOccupiedBed(dormitoryIds)
     // console.log("flag:" + occupiedBeds.value)
@@ -105,11 +105,11 @@ onMounted(() => {
             <span class="domitory_name">{{ planDormitory.dormitoryName }}宿舍</span>
             <div class="bed_number_container">
                 <el-button class="bed_number_btn"
-                    :class="{ 'selected': bedNumber === num && dormitoryId == planDormitory.id, 'already_occupied': isBedOccupied(planDormitory.id, num) }"
-                    @click="bedNumberOnHandle(num, planDormitory.id)"
+                    :class="{ 'selected': bedNumber === num && dormitoryId == planDormitory.dormitoryId, 'already_occupied': isBedOccupied(planDormitory.dormitoryId, num) }"
+                    @click="bedNumberOnHandle(num, planDormitory.dormitoryId)"
                     v-for="num in generateRange(planDormitory.bedAmount)" :key="num"
-                    :disabled="isBedOccupied(planDormitory.id, num)">
-                    {{ planDormitory.id == alreadyChooseDormitoryId && alreadyChooseBedRange == num ? num + '(我选的)' :
+                    :disabled="isBedOccupied(planDormitory.dormitoryId, num)">
+                    {{ planDormitory.dormitoryId == alreadyChooseDormitoryId && alreadyChooseBedRange == num ? num + '(我选的)' :
                     num }}
                 </el-button>
             </div>

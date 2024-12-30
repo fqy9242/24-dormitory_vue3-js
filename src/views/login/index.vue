@@ -101,9 +101,9 @@ const updatePasswordOnSubmit =  () => {
                 confirmPassword: ''
             }
             updatePasswordDialogVisible.value = false
-        } else {
-            ElMessage.error('请检查输入是否正确')
-        }
+        } //else {
+            //ElMessage.error('请检查输入是否正确')
+        //}
     })
 }
 const loginFormRef = ref()
@@ -141,14 +141,16 @@ onUnmounted(() => {
                             <el-input v-model="updatePasswordForm.studentNumber" placeholder="请输入学号" />
                         </el-form-item>
                         <el-form-item prop="oldPassword">
-                            <el-input type="password" v-model="updatePasswordForm.oldPassword" placeholder="请输入旧密码" />
+                            <el-input type="password" v-model="updatePasswordForm.oldPassword" placeholder="请输入旧密码"
+                                showPassword />
                         </el-form-item>
                         <el-form-item prop="newPassword">
-                            <el-input type="password" v-model="updatePasswordForm.newPassword" placeholder="请输入新密码" />
+                            <el-input type="password" v-model="updatePasswordForm.newPassword" placeholder="请输入新密码"
+                                showPassword />
                         </el-form-item>
                         <el-form-item prop="confirmPassword">
                             <el-input type="password" v-model="updatePasswordForm.confirmPassword"
-                                placeholder="请再次输入新密码" />
+                                placeholder="请再次输入新密码" showPassword />
                         </el-form-item>
                         <el-button type="primary" @click="updatePasswordOnSubmit">确定</el-button>
                     </el-form>
